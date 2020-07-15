@@ -1,5 +1,5 @@
-import React from 'react'
-import styled from '@emotion/styled'
+import React, { useState } from "react";
+import styled from "@emotion/styled";
 
 const Campo = styled.div`
   display: flex;
@@ -15,35 +15,89 @@ const Select = styled.select`
   border: 1px solid #e1e1e1;
   --webkit-appearance: none;
 `;
+const InputRadio = styled.input`
+  margin-right: 0.5rem;
+`;
+const Boton = styled.button`
+  background-color: #00838f;
+  font-size: 16px;
+  width: 100%;
+  padding: 1rem;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  border: none;
+  transition: background-color 0.6s ease;
+  margin-top: 1rem;
 
- const InputRadio = styled.input`
-   margin-right: 0.5rem;
- `;
-
- const Boton = styled.button`
-   background-color: #00838f;
-   font-size: 16px;
-   width: 100%;
-   padding: 1rem;
-   color: #fff;
-   text-transform: uppercase;
-   font-weight: bold;
-   border:none;
-   transition: background-color .6s ease;
-   margin-top: 1rem;
-
-   &:hover{
-     cursor: pointer;
-     background-color: #26c6da;
-   }
- `;
+  &:hover {
+    cursor: pointer;
+    background-color: #26c6da;
+  }
+`;
+const Error = styled.div`
+  background-color: red;
+  color: white;
+  padding: 1rem;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2rem;
+`;
 
 export const Formulario = () => {
+  const [datos, setDatos] = useState({
+    marca: "",
+    year: "",
+    plan: "",
+  });
+
+  const [error, setError] = useState(false)
+
+// Extraer los valores del formulario y colocarlos en el state
+  const { marca, year, plan } = datos;
+
+  // leer datos del formulario y colocarlos en el state
+
+  const handleChange = e => {
+    setDatos({
+      ...datos,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  // manejador del submit
+  const handleSubmit = e => {
+    e.preventDefault()
+    if (marca.trim() === '' || year.trim()=== '' || plan.trim() === '' ){
+      setError(true)
+      return
+    }
+    setError(false)
+
+    // obtener la diferencia de años
+
+    // por cada año hay que restar el 3%
+
+    // Americano 15%
+    // Asia 5%
+    // Europeo 30%
+
+    // Basico aumenta 20%
+    // Completoo 50%
+  }
+
   return (
-    <form >
+    <form onSubmit={handleSubmit} >
+      {error ? 
+        <Error>
+          <p>Todos los campos son obligatorios</p>
+        </Error>
+        :
+        null
+      }
       <Campo>
         <Label htmlFor="marca">Marca</Label>
-        <Select name="" id="marca">
+        <Select onChange={handleChange} name="marca" value={marca} id="marca">
           <option value="">-- Selecciona --</option>
           <option value="americano">Americano</option>
           <option value="europeo">Europeo</option>
@@ -53,7 +107,7 @@ export const Formulario = () => {
 
       <Campo>
         <Label htmlFor="year">Año</Label>
-        <Select name="" id="year">
+        <Select onChange={handleChange} name="year" value={year} id="year">
           <option value="">-- Selecciona --</option>
           <option value="2021">2021</option>
           <option value="2020">2020</option>
@@ -69,17 +123,31 @@ export const Formulario = () => {
         </Select>
       </Campo>
 
-        <Campo>
-          <Label>Plan</Label>
+      <Campo>
+        <Label>Plan</Label>
 
-          <InputRadio type="radio" name="plan" value="basico" id="basico"/>
-          <Label htmlFor="basico">Básico</Label>
+        <InputRadio
+          type="radio"
+          name="plan"
+          value="basico"
+          id="basico"
+          checked={plan === "basico"}
+          onChange={handleChange}
+        />
+        <Label htmlFor="basico">Básico</Label>
 
-          <InputRadio type="radio" name="plan" value="completo" id="completo"/>
-          <Label htmlFor="completo">Completo</Label>
-        </Campo>
-          
-          <Boton type="button" >Cotizar</Boton>
+        <InputRadio
+          type="radio"
+          name="plan"
+          value="completo"
+          id="completo"
+          checked={plan === "completo"}
+          onChange={handleChange}
+        />
+        <Label htmlFor="completo">Completo</Label>
+      </Campo>
+
+      <Boton type="submit">Cotizar</Boton>
     </form>
-  )
-}
+  );
+};
