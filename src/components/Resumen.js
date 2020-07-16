@@ -1,20 +1,33 @@
-import React, {Fragment} from "react";
+import React from "react";
+import styled from "@emotion/styled";
+import PropTypes from "prop-types";
+import { primeraMayuscula } from "../helper";
+
+const ContenedorResumen = styled.div`
+  padding: 1rem;
+  text-align: center;
+  background-color: #00838f;
+  color: #fff;
+  margin-top: 1rem;
+`;
 
 export const Resumen = ({ datos }) => {
   // extraer datos
-  console.log(datos)
-  const {marca, year, plan} = datos;
+  const { marca, year, plan } = datos;
 
   if (marca === "" || year === "" || plan === "") return null;
   return (
-      <Fragment>npnm
-        <h2>Resumen de cotización</h2>
-        <ul>
-          <li>Marca: {marca}</li>
-          <li>Plan: {plan}</li>
-          <li>Año del auto: {year}</li>
-        </ul>
+    <ContenedorResumen>
+      <h2>Resumen de cotización</h2>
+      <ul>
+        <li>Marca: {primeraMayuscula(marca)}</li>
+        <li>Plan: {primeraMayuscula(plan)}</li>
+        <li>Año del auto: {year}</li>
+      </ul>
+    </ContenedorResumen>
+  );
+};
 
-      </Fragment>
-    );
+Resumen.propTypes = {
+  datos: PropTypes.object.isRequired,
 };

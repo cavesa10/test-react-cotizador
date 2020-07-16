@@ -26,17 +26,10 @@ export function calcularMarca(marca){
 }
 
 export function calcularPlan(plan){
-  let incremento
-  switch (plan) {
-    case 'basico':
-      incremento = 1.20
-      break;
-    case 'completo':
-      incremento = 1.50
-      break;
-  
-    default:
-      break;
-  }
-  return incremento
+  return (plan === 'basico') ? 1.20 : 1.50
+}
+
+// muestra la primera letra en mayuscula
+export function primeraMayuscula ( texto) {
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
 }
