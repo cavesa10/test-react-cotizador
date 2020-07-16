@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
+import {getDiferenciaYear, calcularMarca, calcularPlan} from '../helper'
 
 const Campo = styled.div`
   display: flex;
@@ -44,57 +45,72 @@ const Error = styled.div`
   margin-bottom: 2rem;
 `;
 
-export const Formulario = () => {
+export const Formulario = ({setResumen}) => {
   const [datos, setDatos] = useState({
     marca: "",
     year: "",
     plan: "",
   });
 
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
-// Extraer los valores del formulario y colocarlos en el state
+  // Extraer los valores del formulario y colocarlos en el state
   const { marca, year, plan } = datos;
 
   // leer datos del formulario y colocarlos en el state
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setDatos({
       ...datos,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   // manejador del submit
-  const handleSubmit = e => {
-    e.preventDefault()
-    if (marca.trim() === '' || year.trim()=== '' || plan.trim() === '' ){
-      setError(true)
-      return
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (marca.trim() === "" || year.trim() === "" || plan.trim() === "") {
+      setError(true);
+      return;
     }
-    setError(false)
+    setError(false);
+    
+    //basae de 2000
+    let resultado = 2000 
 
     // obtener la diferencia de años
+    const diferencia = getDiferenciaYear(year)
+    console.log(diferencia)
 
     // por cada año hay que restar el 3%
+    resultado -= ( (diferencia * 3) *resultado ) / 100
+    console.log(resultado)
 
     // Americano 15%
     // Asia 5%
     // Europeo 30%
+    resultado *= calcularMarca(marca)
+    console.log(resultado)
 
     // Basico aumenta 20%
     // Completoo 50%
-  }
+
+    resultado = parseFloat(calcularPlan(plan)*resultado).toFixed(2)
+    console.log(resultado)
+
+    setResumen({
+      cotizacion: resultado,
+      datos
+    })
+  };
 
   return (
-    <form onSubmit={handleSubmit} >
-      {error ? 
+    <form onSubmit={handleSubmit}>
+      {error ? (
         <Error>
           <p>Todos los campos son obligatorios</p>
         </Error>
-        :
-        null
-      }
+      ) : null}
       <Campo>
         <Label htmlFor="marca">Marca</Label>
         <Select onChange={handleChange} name="marca" value={marca} id="marca">
@@ -109,6 +125,7 @@ export const Formulario = () => {
         <Label htmlFor="year">Año</Label>
         <Select onChange={handleChange} name="year" value={year} id="year">
           <option value="">-- Selecciona --</option>
+          <option value="2022">2022</option>
           <option value="2021">2021</option>
           <option value="2020">2020</option>
           <option value="2019">2019</option>
